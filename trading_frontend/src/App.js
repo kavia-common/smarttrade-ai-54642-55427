@@ -10,6 +10,7 @@ import Sidebar from "./components/Sidebar";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { GlobalStateProvider } from "./contexts/GlobalStateContext";
+import { ApiProvider } from "./contexts/ApiContext";
 
 // Pages
 import Onboarding from "./pages/Onboarding";
@@ -28,23 +29,25 @@ function App() {
       <AuthProvider>
         <ThemeProvider initialTheme="dark">
           <GlobalStateProvider>
-            <div className="main-layout">
-              <Sidebar />
-              <div className="main-content">
-                <Routes>
-                  <Route path="/" element={<Navigate to="/dashboard" />} />
-                  <Route path="/onboarding" element={<Onboarding />} />
-                  <Route path="/kyc" element={<KYC />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/signals" element={<Signals />} />
-                  <Route path="/portfolio" element={<Portfolio />} />
-                  <Route path="/trading" element={<Trading />} />
-                  <Route path="/notifications" element={<Notifications />} />
-                  <Route path="/settings" element={<Settings />} />
-                  <Route path="*" element={<div style={{ padding: 40 }}><h1>404 – Not Found</h1></div>} />
-                </Routes>
+            <ApiProvider>
+              <div className="main-layout">
+                <Sidebar />
+                <div className="main-content">
+                  <Routes>
+                    <Route path="/" element={<Navigate to="/dashboard" />} />
+                    <Route path="/onboarding" element={<Onboarding />} />
+                    <Route path="/kyc" element={<KYC />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/signals" element={<Signals />} />
+                    <Route path="/portfolio" element={<Portfolio />} />
+                    <Route path="/trading" element={<Trading />} />
+                    <Route path="/notifications" element={<Notifications />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="*" element={<div style={{ padding: 40 }}><h1>404 – Not Found</h1></div>} />
+                  </Routes>
+                </div>
               </div>
-            </div>
+            </ApiProvider>
           </GlobalStateProvider>
         </ThemeProvider>
       </AuthProvider>
