@@ -1,48 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate
+} from "react-router-dom";
+import "./App.css";
+import Sidebar from "./components/Sidebar";
+import { AuthProvider } from "./contexts/AuthContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { GlobalStateProvider } from "./contexts/GlobalStateContext";
+
+// Pages
+import Onboarding from "./pages/Onboarding";
+import KYC from "./pages/KYC";
+import Dashboard from "./pages/Dashboard";
+import Signals from "./pages/Signals";
+import Portfolio from "./pages/Portfolio";
+import Trading from "./pages/Trading";
+import Notifications from "./pages/Notifications";
+import Settings from "./pages/Settings";
 
 // PUBLIC_INTERFACE
 function App() {
-  const [theme, setTheme] = useState('light');
-
-  // Effect to apply theme to document element
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  // PUBLIC_INTERFACE
-  const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  };
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <button 
-          className="theme-toggle" 
-          onClick={toggleTheme}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-        >
-          {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
-        </button>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          Current theme: <strong>{theme}</strong>
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <AuthProvider>
+        <ThemeProvider initialTheme="dark">
+          <GlobalStateProvider>
+            <div className="main-layout">
+              <Sidebar />
+              <div className="main-content">
+                <Routes>
+                  <Route path="/" element={<Navigate to="/dashboard" />} />
+                  <Route path="/onboarding" element={<Onboarding />} />
+                  <Route path="/kyc" element={<KYC />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/signals" element={<Signals />} />
+                  <Route path="/portfolio" element={<Portfolio />} />
+                  <Route path="/trading" element={<Trading />} />
+                  <Route path="/notifications" element={<Notifications />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="*" element={<div style={{ padding: 40 }}><h1>404 – Not Found</h1></div>} />
+                </Routes>
+              </div>
+            </div>
+          </GlobalStateProvider>
+        </ThemeProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 
