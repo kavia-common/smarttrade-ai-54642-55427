@@ -1,24 +1,69 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * AuthContext manages user authentication state and JWT session token.
+ */
 export const AuthContext = createContext();
 
 /**
  * PUBLIC_INTERFACE
- * AuthContextProvider provides authentication information and logic for the children components.
+ * AuthProvider provides authentication status, user info, and helpers. 
+ * Synchronizes JWT token to localStorage and propagates authorization.
  */
 export function AuthProvider({ children }) {
-  // Placeholder state: In production, sync this with actual auth logic/API.
-  const [user, setUser] = useState(null);
+  // Holds {user: {...}, accessToken: string}
+  const [auth, setAuth] = useState(() => {
+    try {
+      const v = localStorage.getItem("auth");
+      return v ? JSON.parse(v) : { user: null, accessToken: null };
+    } catch {
+      return { user: null, accessToken: null };
+    }
+  });
+
+  // Save to localStorage on change
+  useEffect(() => {
+    if (!auth || (!auth.user && !auth.accessToken)) {
+      localStorage.removeItem("auth");
+    } else {
+      localStorage.setItem("auth", JSON.stringify(auth));
+    }
+  }, [auth]);
 
   // PUBLIC_INTERFACE
-  const login = (userData) => setUser(userData);
+  const login = (userData, accessToken) => {
+    setAuth({ user: userData, accessToken });
+  };
 
   // PUBLIC_INTERFACE
-  const logout = () => setUser(null);
+  const logout = useCallback(() => {
+    setAuth({ user: null, accessToken: null });
+    localStorage.removeItem("auth");
+  }, []);
+
+  // PUBLIC_INTERFACE
+  const isLoggedIn = !!auth.accessToken;
+
+  // PUBLIC_INTERFACE
+  const getAuthHeader = () =>
+    auth.accessToken ? { Authorization: `Bearer ${auth.accessToken}` } : {};
+
+  // PUBLIC_INTERFACE
+  const setUser = (userData) => setAuth((prev) => ({ ...prev, user: userData }));
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user: auth.user,
+        accessToken: auth.accessToken,
+        login,
+        logout,
+        isLoggedIn,
+        getAuthHeader,
+        setUser,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -26,7 +71,7 @@ export function AuthProvider({ children }) {
 
 /**
  * PUBLIC_INTERFACE
- * useAuth returns the current auth context.
+ * useAuth returns the current authentication context and helpers.
  */
 export function useAuth() {
   return useContext(AuthContext);

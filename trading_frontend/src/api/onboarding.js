@@ -6,12 +6,12 @@
 const BASE_URL = process.env.REACT_APP_API_URL || "/api/onboarding";
 
 // PUBLIC_INTERFACE
-export async function onboardingStart(data) {
+export async function onboardingStart(data, extraHeaders={}) {
   // { email, full_name, agreed_terms }
   try {
     const resp = await fetch(`${BASE_URL}/`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...extraHeaders },
       body: JSON.stringify(data),
     });
     if (!resp.ok) throw await resp.json();
@@ -22,11 +22,11 @@ export async function onboardingStart(data) {
 }
 
 // PUBLIC_INTERFACE
-export async function kycStart({ user_id }) {
+export async function kycStart({ user_id }, extraHeaders={}) {
   try {
     const resp = await fetch(`${BASE_URL}/kyc/start`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...extraHeaders },
       body: JSON.stringify({ user_id }),
     });
     if (!resp.ok) throw await resp.json();
@@ -37,11 +37,11 @@ export async function kycStart({ user_id }) {
 }
 
 // PUBLIC_INTERFACE
-export async function kycSubmit({ user_id, answers }) {
+export async function kycSubmit({ user_id, answers }, extraHeaders={}) {
   try {
     const resp = await fetch(`${BASE_URL}/kyc/submit`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...extraHeaders },
       body: JSON.stringify({ user_id, answers }),
     });
     if (!resp.ok) throw await resp.json();

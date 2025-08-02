@@ -35,7 +35,11 @@ export default function Onboarding() {
     setError("");
     try {
       const signupRes = await AuthAPI.signup({ email, password, full_name: fullName });
-      setUserId(signupRes.user_id);
+      setUserId(signupRes.user?.user_id || "");
+      // Log user in with JWT if returned, or prompt for login otherwise
+      if (signupRes.accessToken) {
+        login({ email: signupRes.user.email, user_id: signupRes.user.user_id }, signupRes.accessToken);
+      }
       await OnboardingAPI.onboardingStart({ email, full_name: fullName, agreed_terms: terms });
       setStep(1);
     } catch (err) {

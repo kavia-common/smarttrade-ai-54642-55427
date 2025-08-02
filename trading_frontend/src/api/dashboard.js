@@ -6,9 +6,10 @@
 const BASE_URL = process.env.REACT_APP_API_URL || "/api/dashboard";
 
 // PUBLIC_INTERFACE
-export async function getPortfolio() {
+// PUBLIC_INTERFACE
+export async function getPortfolio(extraHeaders={}) {
   try {
-    const resp = await fetch(`${BASE_URL}/portfolio`);
+    const resp = await fetch(`${BASE_URL}/portfolio`, { headers: { ...extraHeaders } });
     if (!resp.ok) throw await resp.json();
     return await resp.json();
   } catch (err) {
@@ -17,9 +18,10 @@ export async function getPortfolio() {
 }
 
 // PUBLIC_INTERFACE
-export async function getPnL(period = "1w") {
+// PUBLIC_INTERFACE
+export async function getPnL(period = "1w", extraHeaders={}) {
   try {
-    const resp = await fetch(`${BASE_URL}/pnl?period=${encodeURIComponent(period)}`);
+    const resp = await fetch(`${BASE_URL}/pnl?period=${encodeURIComponent(period)}`, { headers: { ...extraHeaders } });
     if (!resp.ok) throw await resp.json();
     return await resp.json();
   } catch (err) {
@@ -28,9 +30,10 @@ export async function getPnL(period = "1w") {
 }
 
 // PUBLIC_INTERFACE
-export async function getPredictions() {
+// PUBLIC_INTERFACE
+export async function getPredictions(extraHeaders={}) {
   try {
-    const resp = await fetch(`${BASE_URL}/predictions`);
+    const resp = await fetch(`${BASE_URL}/predictions`, { headers: { ...extraHeaders } });
     if (!resp.ok) throw await resp.json();
     return await resp.json();
   } catch (err) {
