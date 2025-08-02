@@ -10,7 +10,15 @@ const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_U
 export async function getPortfolio(extraHeaders={}) {
   try {
     const resp = await fetch(`${BASE_URL}/portfolio`, { headers: { ...extraHeaders } });
-    if (!resp.ok) throw await resp.json();
+    if (!resp.ok) {
+      // Try to parse error as JSON if possible, otherwise as text
+      let text = await resp.text();
+      try {
+        throw JSON.parse(text);
+      } catch (e) {
+        throw { status: resp.status, detail: text };
+      }
+    }
     return await resp.json();
   } catch (err) {
     throw { location: "getPortfolio", err };
@@ -22,7 +30,14 @@ export async function getPortfolio(extraHeaders={}) {
 export async function getPnL(period = "1w", extraHeaders={}) {
   try {
     const resp = await fetch(`${BASE_URL}/pnl?period=${encodeURIComponent(period)}`, { headers: { ...extraHeaders } });
-    if (!resp.ok) throw await resp.json();
+    if (!resp.ok) {
+      let text = await resp.text();
+      try {
+        throw JSON.parse(text);
+      } catch (e) {
+        throw { status: resp.status, detail: text };
+      }
+    }
     return await resp.json();
   } catch (err) {
     throw { location: "getPnL", err };
@@ -34,7 +49,14 @@ export async function getPnL(period = "1w", extraHeaders={}) {
 export async function getPredictions(extraHeaders={}) {
   try {
     const resp = await fetch(`${BASE_URL}/predictions`, { headers: { ...extraHeaders } });
-    if (!resp.ok) throw await resp.json();
+    if (!resp.ok) {
+      let text = await resp.text();
+      try {
+        throw JSON.parse(text);
+      } catch (e) {
+        throw { status: resp.status, detail: text };
+      }
+    }
     return await resp.json();
   } catch (err) {
     throw { location: "getPredictions", err };
