@@ -29,7 +29,13 @@ export function createWebSocket(endpoint, onMessage, onError) {
 // Special helper for the backend's notification websocket (see /api/notifications/websocket-doc):
 export function connectNotificationWebSocket({ onMessage, onError }) {
   // Endpoint e.g. ws://localhost:3001/ws/notifications or configured via ENV
-  const wsUrl =
-    process.env.REACT_APP_WS_URL || "ws://localhost:3001/ws/notifications";
+  // Use WSS for production by replacing http(s) with ws(s)
+  let wsUrl = process.env.REACT_APP_WS_URL;
+  if (!wsUrl && process.env.REACT_APP_API_URL) {
+    wsUrl = process.env.REACT_APP_API_URL.replace(/^http/, "ws").replace(/\/api$/, "/ws/notifications");
+  }
+  if (!wsUrl) {
+    wsUrl = "ws://localhost:3001/ws/notifications";
+  }
   return createWebSocket(wsUrl, onMessage, onError);
 }

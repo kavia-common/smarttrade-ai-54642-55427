@@ -3,7 +3,7 @@
 // Onboarding & KYC API client
 //
 
-const BASE_URL = process.env.REACT_APP_API_URL || "/api/onboarding";
+const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/onboarding` : "/api/onboarding");
 
 // PUBLIC_INTERFACE
 export async function onboardingStart(data, extraHeaders={}) {

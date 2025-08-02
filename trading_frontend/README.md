@@ -11,21 +11,42 @@ This project provides a minimal React template with a clean, modern UI and minim
 
 ## Getting Started
 
-In the project directory, you can run:
+This project is a modern, responsive, minimal React SPA for the SmartTrade.AI trading platform.
 
-### `npm start`
+### Prerequisites
 
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js >= 16, npm >= 8
+- Copy the `.env.example` to `.env` and set variables:
+  ```
+  cp .env.example .env
+  ```
+- Set `REACT_APP_API_URL` in your `.env` to:
+  ```
+  REACT_APP_API_URL=http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api
+  ```
+- (Optional) Set `REACT_APP_WS_URL` if customizing notifications WebSocket endpoint.
 
-### `npm test`
+### Development
 
-Launches the test runner in interactive watch mode.
+- `npm install`
+- `npm start`
+  - Runs the app in development mode at [http://localhost:3000](http://localhost:3000).
 
-### `npm run build`
+### Features
+- User onboarding/registration
+- KYC/risk questionnaire
+- Real-time dashboard (holdings, P&L, predictions)
+- Signal explorer & sentiment
+- Portfolio management (manual/automated)
+- Trade execution UI
+- Notifications & alerts (including WebSocket live)
+- Account/API key management
+- Responsive dark/modern UI
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### API Routing
+
+All REST API requests are routed via `REACT_APP_API_URL` as specified in your `.env` file.
+
 
 ## Customization
 

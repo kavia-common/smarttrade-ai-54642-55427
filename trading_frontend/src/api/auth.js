@@ -3,7 +3,7 @@
 // Authentication API client: login, signup, logout.
 //
 
-const BASE_URL = process.env.REACT_APP_API_URL || "/api/auth";
+const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/auth` : "/api/auth");
 
 /**
  * PUBLIC_INTERFACE

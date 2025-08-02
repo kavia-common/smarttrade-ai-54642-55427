@@ -3,7 +3,7 @@
 // Account & Settings API client
 //
 
-const BASE_URL = process.env.REACT_APP_API_URL || "/api/account";
+const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/account` : "/api/account");
 
 // PUBLIC_INTERFACE
 export async function updateSettings(data) {

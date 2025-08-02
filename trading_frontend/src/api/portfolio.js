@@ -3,7 +3,7 @@
 // Portfolio Management API client
 //
 
-const BASE_URL = process.env.REACT_APP_API_URL || "/api/portfolio";
+const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/portfolio` : "/api/portfolio");
 
 // PUBLIC_INTERFACE
 export async function allocatePortfolio(allocations) {

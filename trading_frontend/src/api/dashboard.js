@@ -3,7 +3,7 @@
 // Dashboard API client
 //
 
-const BASE_URL = process.env.REACT_APP_API_URL || "/api/dashboard";
+const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/dashboard` : "/api/dashboard");
 
 // PUBLIC_INTERFACE
 // PUBLIC_INTERFACE

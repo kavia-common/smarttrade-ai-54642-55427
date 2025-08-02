@@ -3,7 +3,7 @@
 // Signals & Sentiment API client
 //
 
-const BASE_URL = process.env.REACT_APP_API_URL || "/api/signals";
+const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/signals` : "/api/signals");
 
 // PUBLIC_INTERFACE
 export async function exploreSignals({ asset, timeframe }) {
