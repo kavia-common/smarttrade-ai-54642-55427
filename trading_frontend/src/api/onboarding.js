@@ -3,7 +3,9 @@
 // Onboarding & KYC API client
 //
 
-const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/onboarding` : "/api/onboarding");
+const BASE_URL = (process.env.REACT_APP_API_URL
+  ? `${process.env.REACT_APP_API_URL}/onboarding`
+  : "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/onboarding");
 
 // PUBLIC_INTERFACE
 export async function onboardingStart(data, extraHeaders={}) {

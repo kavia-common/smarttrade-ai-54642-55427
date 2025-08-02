@@ -3,7 +3,9 @@
 // Notifications API client
 //
 
-const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/notifications` : "/api/notifications");
+const BASE_URL = (process.env.REACT_APP_API_URL
+  ? `${process.env.REACT_APP_API_URL}/notifications`
+  : "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/notifications");
 
 // PUBLIC_INTERFACE
 export async function listNotifications() {

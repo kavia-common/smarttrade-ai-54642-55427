@@ -3,7 +3,9 @@
 // Signals & Sentiment API client
 //
 
-const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/signals` : "/api/signals");
+const BASE_URL = (process.env.REACT_APP_API_URL
+  ? `${process.env.REACT_APP_API_URL}/signals`
+  : "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/signals");
 
 // PUBLIC_INTERFACE
 export async function exploreSignals({ asset, timeframe }) {

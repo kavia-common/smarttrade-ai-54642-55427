@@ -3,7 +3,9 @@
 // Account & Settings API client
 //
 
-const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/account` : "/api/account");
+const BASE_URL = (process.env.REACT_APP_API_URL
+  ? `${process.env.REACT_APP_API_URL}/account`
+  : "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/account");
 
 // PUBLIC_INTERFACE
 export async function updateSettings(data) {

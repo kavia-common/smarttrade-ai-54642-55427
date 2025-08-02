@@ -3,7 +3,9 @@
 // Authentication API client: login, signup, logout.
 //
 
-const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/auth` : "/api/auth");
+const BASE_URL = (process.env.REACT_APP_API_URL
+  ? `${process.env.REACT_APP_API_URL}/auth`
+  : "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/auth");
 
 /**
  * PUBLIC_INTERFACE

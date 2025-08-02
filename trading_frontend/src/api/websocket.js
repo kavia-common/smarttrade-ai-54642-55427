@@ -28,14 +28,16 @@ export function createWebSocket(endpoint, onMessage, onError) {
 // PUBLIC_INTERFACE
 // Special helper for the backend's notification websocket (see /api/notifications/websocket-doc):
 export function connectNotificationWebSocket({ onMessage, onError }) {
-  // Endpoint e.g. ws://localhost:3001/ws/notifications or configured via ENV
-  // Use WSS for production by replacing http(s) with ws(s)
+  // Endpoint from .env, or fallback to proper backend for demo/docker/production
   let wsUrl = process.env.REACT_APP_WS_URL;
   if (!wsUrl && process.env.REACT_APP_API_URL) {
-    wsUrl = process.env.REACT_APP_API_URL.replace(/^http/, "ws").replace(/\/api$/, "/ws/notifications");
+    wsUrl = process.env.REACT_APP_API_URL
+      .replace(/^http/, "ws")
+      .replace(/\/api$/, "/ws/notifications");
   }
   if (!wsUrl) {
-    wsUrl = "ws://localhost:3001/ws/notifications";
+    wsUrl =
+      "ws://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/ws/notifications";
   }
   return createWebSocket(wsUrl, onMessage, onError);
 }

@@ -3,7 +3,9 @@
 // Portfolio Management API client
 //
 
-const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/portfolio` : "/api/portfolio");
+const BASE_URL = (process.env.REACT_APP_API_URL
+  ? `${process.env.REACT_APP_API_URL}/portfolio`
+  : "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/portfolio");
 
 // PUBLIC_INTERFACE
 export async function allocatePortfolio(allocations) {

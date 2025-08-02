@@ -3,7 +3,9 @@
 // Dashboard API client
 //
 
-const BASE_URL = (process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/dashboard` : "/api/dashboard");
+const BASE_URL = (process.env.REACT_APP_API_URL
+  ? `${process.env.REACT_APP_API_URL}/dashboard`
+  : "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/dashboard");
 
 /**
  * Attempts to parse the fetch response as JSON.
