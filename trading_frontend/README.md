@@ -20,11 +20,13 @@ This project is a modern, responsive, minimal React SPA for the SmartTrade.AI tr
   ```
   cp .env.example .env
   ```
-- Set `REACT_APP_API_URL` in your `.env` to:
-  ```
-  REACT_APP_API_URL=http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api
-  ```
-- (Optional) Set `REACT_APP_WS_URL` if customizing notifications WebSocket endpoint.
+- ⚠️ All backend API calls (REST & WebSocket) are hardcoded to:
+  
+      http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/
+
+  There is no fallback to environment variables—this ensures a single consistent backend endpoint as required.
+
+- If you deploy the frontend from HTTPS (such as https://ai-powered-trading-app.kavia.app) but the backend is HTTP, most browsers will block API/WebSocket calls due to mixed-content CORS restrictions. The app will display clear error messages in this case.
 
 ### Development
 
@@ -43,9 +45,20 @@ This project is a modern, responsive, minimal React SPA for the SmartTrade.AI tr
 - Account/API key management
 - Responsive dark/modern UI
 
-### API Routing
+### Backend API Routing
 
-All REST API requests are routed via `REACT_APP_API_URL` as specified in your `.env` file.
+**Important:**  
+All REST API and WebSocket requests are **hardcoded** to use:
+  
+    http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/
+  
+This is enforced in all API modules and cannot be changed via environment variables or `.env` files.  
+If you need to adjust this, update the backend base URLs at the top of each `src/api/*.js` module and `src/api/websocket.js`.
+
+### CORS and Mixed Content
+
+If you serve the frontend over HTTPS but the backend is only HTTP, most browsers will block all requests for security (mixed-content policy).  
+You will get "Network Error" or "Failed to fetch" errors, and the UI explains this to end users.
 
 
 ## Customization

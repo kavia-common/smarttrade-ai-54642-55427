@@ -2,22 +2,23 @@
 // PUBLIC_INTERFACE
 // Dashboard API client
 //
+// All endpoints are pinned to:
+//   http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/
+//
+// STRICT: This module does not use process.env or .env. All endpoints are hardcoded for clarity.
+// If the frontend is on HTTPS but backend is HTTP, browser will block calls! UI will show user-facing explanations.
+//
 
-const BASE_URL = (process.env.REACT_APP_API_URL
-  ? `${process.env.REACT_APP_API_URL}/dashboard`
-  : "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/dashboard");
+const BASE_URL = "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/dashboard";
 
 /**
- * Attempts to parse the fetch response as JSON.
- * If the response is not JSON (e.g., HTML), it returns an error object indicating invalid format.
+ * Catches fetch response and returns JSON or meaningful HTML/network error diagnostics.
  */
 async function parseJsonSafely(resp) {
   const text = await resp.text();
   try {
-    // Try to parse as JSON
     return JSON.parse(text);
   } catch (e) {
-    // Probably HTML or invalid JSON
     throw {
       status: resp.status,
       detail:
@@ -27,19 +28,30 @@ async function parseJsonSafely(resp) {
     };
   }
 }
-
 /**
- * Checks for 404/invalid status and generates a user-facing error message.
+ * Checks HTTP failures and gives user-friendly frontend messages.
  */
 function handleResponseError(resp, context = "Unknown API") {
   if (resp.status === 404) {
-    // Show user-friendly message for missing resource
     return `${context} not found (404). Please check with support if this persists.`;
   }
   if (resp.status === 500) {
     return `${context} returned server error. Please try again later.`;
   }
   return null;
+}
+/**
+ * Wrap TypeError/network errors as explicit user UI message.
+ */
+function handleNetworkError(err) {
+  if (err instanceof TypeError && err.message &&
+      (err.message.includes("Failed to fetch") || err.message.includes("NetworkError"))
+    ) {
+    return {
+      message: "Network/CORS: Cannot connect to backend. The typical cause is running this frontend on HTTPS and backend on HTTP—browsers block mixed-content for security. Please deploy both using HTTPS or see developer instructions."
+    };
+  }
+  return { message: err && err.message ? err.message : "A client or network error occurred." };
 }
 
 // PUBLIC_INTERFACE
@@ -51,19 +63,17 @@ export async function getPortfolio(extraHeaders = {}) {
   try {
     const resp = await fetch(`${BASE_URL}/portfolio`, { headers: { ...extraHeaders } });
     if (!resp.ok) {
-      // User-facing error for 404
       const custom = handleResponseError(resp, "Holdings summary");
       if (custom) throw { message: custom };
       throw await parseJsonSafely(resp);
     }
     const data = await parseJsonSafely(resp);
-    // Defensive: verify essential fields, else return error
     if (!data || typeof data.total_value === "undefined" || !Array.isArray(data.positions)) {
       throw { message: "Portfolio data missing or malformed from backend." };
     }
     return data;
   } catch (err) {
-    throw { location: "getPortfolio", err };
+    throw { location: "getPortfolio", ...(handleNetworkError(err)), err };
   }
 }
 
@@ -86,14 +96,13 @@ export async function getPnL(period = "1w", extraHeaders = {}) {
     }
     return data;
   } catch (err) {
-    throw { location: "getPnL", err };
+    throw { location: "getPnL", ...(handleNetworkError(err)), err };
   }
 }
 
 // PUBLIC_INTERFACE
 /**
- * Fetch ML-based market predictions for dashboard. Handles non-JSON/HTML error responses gracefully.
- * Shows explicit user-facing errors for 404/bad responses.
+ * Fetch ML-based market predictions for dashboard. Handles non-JSON/HTML/timeout error responses gracefully.
  */
 export async function getPredictions(extraHeaders = {}) {
   try {
@@ -109,6 +118,6 @@ export async function getPredictions(extraHeaders = {}) {
     }
     return data;
   } catch (err) {
-    throw { location: "getPredictions", err };
+    throw { location: "getPredictions", ...(handleNetworkError(err)), err };
   }
 }

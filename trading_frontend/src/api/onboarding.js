@@ -2,10 +2,25 @@
 // PUBLIC_INTERFACE
 // Onboarding & KYC API client
 //
+// All backend calls use:
+//   http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/
+// No .env or process.env support.
+//
+// If the browser is served with HTTPS but this backend is HTTP, browser will block with CORS/mixed-content error.
+//
 
-const BASE_URL = (process.env.REACT_APP_API_URL
-  ? `${process.env.REACT_APP_API_URL}/onboarding`
-  : "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/onboarding");
+const BASE_URL = "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/onboarding";
+
+function handleNetworkError(err) {
+  if (err instanceof TypeError && err.message &&
+      (err.message.includes("Failed to fetch") || err.message.includes("NetworkError"))
+    ) {
+    return {
+      message: "Network/CORS error: Unable to reach backend (mixed content: HTTPS frontend to HTTP backend is blocked by browsers)."
+    };
+  }
+  return { message: err && err.message ? err.message : "A network error occurred." };
+}
 
 // PUBLIC_INTERFACE
 export async function onboardingStart(data, extraHeaders={}) {
@@ -19,7 +34,7 @@ export async function onboardingStart(data, extraHeaders={}) {
     if (!resp.ok) throw await resp.json();
     return await resp.json();
   } catch (err) {
-    throw { location: "onboardingStart", err };
+    throw { location: "onboardingStart", ...(handleNetworkError(err)), err };
   }
 }
 
@@ -34,7 +49,7 @@ export async function kycStart({ user_id }, extraHeaders={}) {
     if (!resp.ok) throw await resp.json();
     return await resp.json();
   } catch (err) {
-    throw { location: "kycStart", err };
+    throw { location: "kycStart", ...(handleNetworkError(err)), err };
   }
 }
 
@@ -49,6 +64,6 @@ export async function kycSubmit({ user_id, answers }, extraHeaders={}) {
     if (!resp.ok) throw await resp.json();
     return await resp.json();
   } catch (err) {
-    throw { location: "kycSubmit", err };
+    throw { location: "kycSubmit", ...(handleNetworkError(err)), err };
   }
 }

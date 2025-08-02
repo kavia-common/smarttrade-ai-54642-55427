@@ -2,10 +2,24 @@
 // PUBLIC_INTERFACE
 // Account & Settings API client
 //
+// All endpoints are hardcoded to backend base URL:
+//   http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/
+//
+// NO .env or process.env fallback.
+//
 
-const BASE_URL = (process.env.REACT_APP_API_URL
-  ? `${process.env.REACT_APP_API_URL}/account`
-  : "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/account");
+const BASE_URL = "http://kavia-alb-59004123-1657625787.us-east-1.elb.amazonaws.com/api/account";
+
+function handleNetworkError(err) {
+  if (err instanceof TypeError && err.message &&
+      (err.message.includes("Failed to fetch") || err.message.includes("NetworkError"))
+    ) {
+    return {
+      message: "Network/CORS error: Cannot reach backend account service. Mixed-content errors (HTTPS frontend, HTTP backend) are common here."
+    };
+  }
+  return { message: err && err.message ? err.message : "A network error occurred." };
+}
 
 // PUBLIC_INTERFACE
 export async function updateSettings(data) {
@@ -18,7 +32,7 @@ export async function updateSettings(data) {
     if (!resp.ok) throw await resp.json();
     return await resp.json();
   } catch (err) {
-    throw { location: "updateSettings", err };
+    throw { location: "updateSettings", ...(handleNetworkError(err)), err };
   }
 }
 
@@ -29,7 +43,7 @@ export async function listApiKeys() {
     if (!resp.ok) throw await resp.json();
     return await resp.json();
   } catch (err) {
-    throw { location: "listApiKeys", err };
+    throw { location: "listApiKeys", ...(handleNetworkError(err)), err };
   }
 }
 
@@ -40,7 +54,7 @@ export async function createApiKey() {
     if (!resp.ok) throw await resp.json();
     return await resp.json();
   } catch (err) {
-    throw { location: "createApiKey", err };
+    throw { location: "createApiKey", ...(handleNetworkError(err)), err };
   }
 }
 
@@ -55,6 +69,6 @@ export async function revokeApiKey(api_key_id) {
     if (!resp.ok) throw await resp.json();
     return await resp.json();
   } catch (err) {
-    throw { location: "revokeApiKey", err };
+    throw { location: "revokeApiKey", ...(handleNetworkError(err)), err };
   }
 }
