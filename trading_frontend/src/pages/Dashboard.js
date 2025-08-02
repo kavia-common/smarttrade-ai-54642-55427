@@ -27,7 +27,18 @@ export default function Dashboard() {
         const mRes = await DashboardAPI.getPredictions();
         setPred(mRes);
       } catch (err) {
-        setError(getApiErrorMessage(err));
+        // Detect backend returned HTML/plain text instead of JSON and show extra guidance
+        let msg = getApiErrorMessage(err);
+        if (
+          msg &&
+          typeof msg === "string" &&
+          (msg.includes("non-JSON response") ||
+            (msg.startsWith("<") && msg.includes("html")))
+        ) {
+          msg =
+            "Dashboard data unavailable: Backend service returned HTML or invalid response. Service may be misconfigured or temporarily unavailable.";
+        }
+        setError(msg);
       }
       setLoading(false);
     }
